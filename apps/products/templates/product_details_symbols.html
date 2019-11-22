@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block header %}
+<link href="{% static "css/plugins/image-picker/image-picker.css" %}" rel="stylesheet">
+<link href="{% static "css/products.css" %}" rel="stylesheet">
+{% endblock %}
+{% block subheader %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Product Symbols for {{ prod_name }}</h2>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/">Home</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <a href="/products/list">Product List</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <strong>Product Images</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+{% endblock %}
+{% block contents %}
+    <div class="wrapper wrapper-content {{ content_class }}">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="ibox">
+
+                    <div class="ibox-content">
+                        <div>
+                        <h3>Product Image</h3>
+                    </div>
+                        <img class="img-fluid mx-auto d-block" src="{% static prod_data.full_image_path  %}">
+                    </div>
+                </div>
+
+          <div class="ibox">
+                    <div class="ibox-content">
+                    <div>
+                        <h3>Current selected Symbols</h3>
+                    </div>
+                        {% for symb in product_symbols %}
+                            <img class="img-fluid mx-auto d-block img-thumbnail" src="{% static symb.symbol.full_symbol_path  %}">
+                          <!--  {{ symb.symbol.full_symbol_path }} -->
+                            <br>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-10">
+
+
+            <div class="ibox-content">
+
+<form id="form_symbol_picker"  class="" method="POST">{% csrf_token %}
+<input type="hidden" name="myhidden" value="fred">
+            <select class="image-picker show-html" data-limit="6" multiple="multiple" id="symbol_picker" name="symbols_picked">
+                {% for avil_symbols in all_sym_obj %}
+  <option data-img-src="{% static avil_symbols.full_symbol_path_svg  %}" value="{{ avil_symbols.pk }}" data-img-class="image_picker_image"
+    {% if avil_symbols.pk in current_symbol_list %}
+        selected="true"
+          {% endif %}
+  >{{ avil_symbols.refenceno }}</option>
+   {% endfor %}
+</select>
+<button class="btn btn-primary " type="submit"><i class="fa fa-check"></i>&nbsp;Submit</button>
+</form>
+             </div>
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+    <!-- image picker -->
+
+    <script src="{% static "js/plugins/image-picker/image-picker.min.js" %}"></script>
+     <script>
+    $("#symbol_picker").imagepicker();
+    </script>
+{% endblock %}
+
