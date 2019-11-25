@@ -69,7 +69,8 @@ $(document).ready(function() {
                 className: "center",
                 render: function ( data, type, row ) {
                     // Combine the first and last names into a single table field
-                    return '<img height="30" class="rounded mx-auto d-block " src="{% static "images/"  %}' + data[4] +'">';
+                    {#return '<img height="30" class="rounded mx-auto d-block " src="{% static "images/"  %}' + data[4] +'">';#}
+                    return '<img height="30" class="rounded mx-auto d-block" src="https://www.safetysignsandnotices.co.uk/image/' + data[4] +'">';
                 }
             },
             {data: null,
