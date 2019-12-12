@@ -1,0 +1,18 @@
+<ul class="stat-list">
+    <li>
+        <h2 class="no-margins">£{{ stats_range.direct.value|floatformat:2 }}</h2>
+        <small>From {{ stats_range.direct.count }} Web Sales</small>
+    </li>
+    <li>
+        <h2 class="no-margins">£{{ stats_range.medusa.value|floatformat:2 }}</h2>
+        <small>From {{ stats_range.medusa.count }} Medusa Sales</small>
+    </li>
+    <li>
+        <h2 class="no-margins">£{{ stats_range.account.value|floatformat:2 }}</h2>
+        <small>From {{ stats_range.account.count }} PO / Proforma</small>
+    </li>
+    <li>
+        <h2 class="no-margins font-bold">£{{ stats_range.total.value|floatformat:2 }}</h2>
+        <small>From {{ stats_range.total.count }} Total Sales</small>
+    </li>
+</ul>

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+        {% block contents %}
+
+            <div class="wrapper wrapper-content">
+        <div class="row">
+                    <div class="col-lg-4">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <span class="label label-info float-left">Today</span>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                <div class="col-lg-9">
+                                    <div class="flot-chart">
+                                        <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    {%  include 'sales_stats_list.html' with stats_range=daily_stats %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <span class="label label-info float-left">Weekly</span>
+                            </div>
+                             <div class="ibox-content">
+                                <div class="row">
+                                <div class="col-lg-9">
+                                    <div class="flot-chart">
+                                        <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    {%  include 'sales_stats_list.html' with stats_range=weekly_stats %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <span class="label label-info float-left">Monthly</span>
+                            </div>
+                             <div class="ibox-content">
+                                <div class="row">
+                                <div class="col-lg-9">
+                                    <div class="flot-chart">
+                                        <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    {%  include 'sales_stats_list.html' with stats_range=monthly_stats %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+
+
+                </div>
+        </div>
+        {% endblock %}
+
+{% block extra_js %}
+<script>
+
+</script>
+{% endblock %}
+

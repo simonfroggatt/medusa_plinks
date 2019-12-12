@@ -29,6 +29,7 @@ from apps.products.views import product_list_asJson
 urlpatterns = [
 
     path('products/', include('apps.products.urls')),
+    path('dashboard/', include('apps.dashboard.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('json_product_data/', product_list_asJson),
