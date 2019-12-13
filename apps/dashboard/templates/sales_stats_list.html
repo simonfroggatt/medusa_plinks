@@ -1,15 +1,15 @@
 <ul class="stat-list">
     <li>
         <h2 class="no-margins">£{{ stats_range.direct.value|floatformat:2 }}</h2>
-        <small>From {{ stats_range.direct.count }} Web Sales</small>
+        <small>From {{ stats_range.direct.count }} Website</small>
     </li>
     <li>
         <h2 class="no-margins">£{{ stats_range.medusa.value|floatformat:2 }}</h2>
-        <small>From {{ stats_range.medusa.count }} Medusa Sales</small>
+        <small>From {{ stats_range.medusa.count }} Medusa</small>
     </li>
     <li>
         <h2 class="no-margins">£{{ stats_range.account.value|floatformat:2 }}</h2>
-        <small>From {{ stats_range.account.count }} PO / Proforma</small>
+        <small>From {{ stats_range.account.count }} Accounts</small>
     </li>
     <li>
         <h2 class="no-margins font-bold">£{{ stats_range.total.value|floatformat:2 }}</h2>

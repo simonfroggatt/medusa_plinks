@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block header %}
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"/>
+    {% endblock %}
 
 
         {% block contents %}
@@ -14,9 +17,11 @@
                             <div class="ibox-content">
                                 <div class="row">
                                 <div class="col-lg-9">
-                                    <div class="flot-chart">
-                                        <div class="flot-chart-content" id="flot-dashboard-chart"></div>
-                                    </div>
+
+                            <div>
+                                <canvas id="doughnutDailyChart" ></canvas>
+                            </div>
+
                                 </div>
                                 <div class="col-lg-3">
                                     {%  include 'sales_stats_list.html' with stats_range=daily_stats %}
@@ -71,8 +76,26 @@
         {% endblock %}
 
 {% block extra_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
 <script>
+$(function () {
 
+    var doughnutDataDaily = {
+        labels: ["WebSite","Medusa","Account" ],
+        datasets: [{
+            data: [{{ daily_stats.direct.value|floatformat:2 }},{{ daily_stats.medusa.value|floatformat:2 }},{{ daily_stats.account.value|floatformat:2 }}],
+            backgroundColor: ["#3fde00","#243fe1","#cf00a0"]
+        }]
+    } ;
+
+
+    var doughnutOptionsDaily = {
+        responsive: true
+    };
+
+    var ct_daily = document.getElementById("doughnutDailyChart").getContext("2d");
+    new Chart(ct_daily, {type: 'doughnut', data: doughnutDataDaily, options:doughnutOptionsDaily});
+})
 </script>
 {% endblock %}
 

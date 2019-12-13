@@ -25,6 +25,7 @@ from my_site.views import (
 )
 
 from apps.products.views import product_list_asJson
+from apps.dashboard.views import order_stats
 
 urlpatterns = [
 
@@ -33,6 +34,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('json_product_data/', product_list_asJson),
-    path('', TemplateView.as_view(template_name='index.html'), name='home')
+    path('', order_stats),
+    #path('', TemplateView.as_view(template_name='index.html'), name='home')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

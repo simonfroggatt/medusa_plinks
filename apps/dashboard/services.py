@@ -6,10 +6,12 @@ import pandas as pd
 def range_stats(irange):
 
     date_range = create_date_range(irange)
-    date_range = {'start': '2019-06-01', 'end': '2019-06-30'}
+    #date_range = {'start': '2019-06-01', 'end': '2019-06-30'}
+    print(date_range)
     queryset = OcOrder.objects.orders_range(date_range['start'], date_range['end'])
     #queryset = OcOrder.objects.orders_range('2019-06-01', '2019-06-30')
     qs_dict = queryset.values_list("total", "payment_code", "date_added", "direct_website_order")
+    print(queryset)
     stats_data = create_stats(qs_dict, irange, date_range)
 
     return stats_data
@@ -20,7 +22,7 @@ def create_date_range(irange):
     enddate = startdate + dt.timedelta(days=1)
     if irange == 'D':
         startdate = dt.date.today()
-        enddate = startdate
+        enddate = startdate + dt.timedelta(days=1)
     elif irange == 'W':
         today = dt.date.today()
         startdate = today - dt.timedelta(days=today.weekday())

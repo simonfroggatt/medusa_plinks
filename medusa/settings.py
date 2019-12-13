@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.products.apps.ProductsConfig',
-    'apps.dashboard.apps.DashboardConfig'
+    'apps.dashboard.apps.DashboardConfig',
+    'medusa'
 ]
 
 MIDDLEWARE = [
@@ -76,12 +77,24 @@ WSGI_APPLICATION = 'medusa.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'safetysigns_opencart_core',
+#        'USER': 'root',
+#        'PASSWORD': 'root',
+#    },
+#
+#}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'safetysigns_opencart_core',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'USER': 'tsg_admin',
+        'PASSWORD': 'Zq5IpC339rlbMdZL',
+        'HOST': '109.108.132.99',
+        'PORT': '3306',
     },
 
 }
