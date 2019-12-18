@@ -7,14 +7,12 @@ def range_stats(irange):
 
     date_range = create_date_range(irange)
     #date_range = {'start': '2019-06-01', 'end': '2019-06-30'}
-    print(date_range)
     queryset = OcOrder.objects.orders_range(date_range['start'], date_range['end'])
     #queryset = OcOrder.objects.orders_range('2019-06-01', '2019-06-30')
     qs_dict = queryset.values_list("total", "payment_code", "date_added", "direct_website_order")
-    print(queryset)
     stats_data = create_stats(qs_dict, irange, date_range)
-
-    return stats_data
+    chart_data = create_chart_data(qs_dict, irange, date_range)
+    return {'stats': stats_data, 'chart': chart_data}
 
 
 def create_date_range(irange):
@@ -43,8 +41,10 @@ def create_stats(pd_data_in, irange, date_range):
     payment_types = ['PP_PRO', 'PAYPAL_PRO', 'PP_STANDARD', 'SAGEPAY', 'COD']
     po_types = ['PROFORMA', 'PO']
 
-    df = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])  ## this will save 50% memory
+    if len(pd_data_in) <= 0:
+        return order_stats
 
+    df = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])
 
     order_stats['total']['count'] = df['total'].count()
     order_stats['total']['value'] = df['total'].sum()
@@ -75,32 +75,44 @@ def create_stats(pd_data_in, irange, date_range):
         elif total_type[1].upper() in po_types:
             order_stats['account']['value'] += total_qty
 
-    idx = pd.date_range(date_range['start'], date_range['end'])
-
-    df2 = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])  ## this will save 50% memory
-    df2.asfreq('d').index
-
-   # df2.set_index(idx)
-
-    #df3 = df2.resample('D').count()
-
-    print(df2)
-
-    pd.date_range(date_range['start'], date_range['end'], freq='D')
-    df2 = df.set_index('date_added').groupby(['direct_website_order', 'payment_code']).sum()
-   # df.set_index('date_added')
-   # all_days = pd.date_range(df.index.min(), df.index.max(), freq='D')
-
-    #dtg = df.set_index('date_added').groupby(
-    #    ['direct_website_order', 'payment_code', pd.Grouper(freq=irange)]).resample(irange).sum()
-
-
-    #df.reindex(all_days)
-
-   # print(df2)
-
-    #dtg.reindex(fill_value=0)
-    #print(df.loc[all_days])
-
     return order_stats
+
+
+def create_chart_data(pd_data_in, irange, date_range):
+
+    #chart_type_stats = {'direct': {'count': 0, 'value': 0}, 'medusa': {'count': 0, 'value': 0}, 'account': {'count': 0, 'value': 0}, 'total': {'count': 0, 'value': 0}}
+    chart_period_stats = {
+        'direct': [0, 0, 0, 0, 0, 0, 0],
+        'medusa': [0, 0, 0, 0, 0, 0, 0],
+        'account': [0, 0, 0, 0, 0, 0, 0],
+        'total': [0, 0, 0, 0, 0, 0, 0]
+    }
+    payment_types = ['PP_PRO', 'PAYPAL_PRO', 'PP_STANDARD', 'SAGEPAY', 'COD']
+    po_types = ['PROFORMA', 'PO']
+
+    df = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])
+    df['day_of_week'] = df['date_added'].dt.dayofweek
+
+    print(df)
+
+    totals_df = df.groupby(['day_of_week', 'direct_website_order', 'payment_code']).sum()
+    totals_df['total'] = totals_df['total'].apply(pd.to_numeric, errors='coerce')
+
+    totals = totals_df.T.to_dict('index')
+    total_values = totals.get('total')
+    for total_type, total_qty in total_values.items():  #total_type = ['day of week', 'website_direct', 'payment_type']
+        dow = total_type[0]
+        if total_type[2].upper() in payment_types:
+           if total_type[1] == 0:
+              chart_period_stats['medusa'][dow] += round(total_qty,2)
+           else:
+              chart_period_stats['direct'][dow] += round(total_qty,2)
+        elif total_type[2].upper() in po_types:
+                chart_period_stats['account'][dow] += round(total_qty,2)
+        chart_period_stats['total'][dow] += round(total_qty,2)
+
+    print(chart_period_stats)
+    return chart_period_stats
+
+
 

@@ -11,8 +11,8 @@ class OcOrderQuerySet(models.QuerySet):
         return self.filter(payment_status_id__in=valid_status)
 
     def today(self):
-        #today_data = timezone.datetime.today()
-        today_data = '2019-06-17'
+        today_data = timezone.datetime.today()
+       #ß today_data = '2019-06-17'
         return self.filter(date_added__contains=today_data)
 
     def order_range(self, startdate, enddate):

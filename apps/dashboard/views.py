@@ -15,7 +15,8 @@ def order_stats(request):
     order_stats_weekly = sv.range_stats('W')
     order_stats_monthly = sv.range_stats('M')
 
-    content = {'content_class': 'stats', 'daily_stats': order_stats_daily, 'weekly_stats': order_stats_weekly, 'monthly_stats': order_stats_monthly}
+    content = {'content_class': 'stats', 'daily_stats': order_stats_daily['stats'], 'weekly_stats': order_stats_weekly['stats'], 'monthly_stats': order_stats_monthly['stats'],
+                'weekly_chart': order_stats_weekly['chart'], 'monthly_chart': order_stats_monthly['chart']}
     return render(request, template_name, content)
 
 

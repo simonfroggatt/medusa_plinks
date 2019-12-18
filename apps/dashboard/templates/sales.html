@@ -38,8 +38,8 @@
                              <div class="ibox-content">
                                 <div class="row">
                                 <div class="col-lg-9">
-                                    <div class="flot-chart">
-                                        <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                                     <div>
+                                        <canvas id="stackWeeklyChart" ></canvas>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -72,7 +72,6 @@
 
 
                 </div>
-        </div>
         {% endblock %}
 
 {% block extra_js %}
@@ -90,11 +89,71 @@ $(function () {
 
 
     var doughnutOptionsDaily = {
-        responsive: true
+        responsive: true,
     };
 
     var ct_daily = document.getElementById("doughnutDailyChart").getContext("2d");
     new Chart(ct_daily, {type: 'doughnut', data: doughnutDataDaily, options:doughnutOptionsDaily});
+
+
+    var test = {{ weekly_chart.direct }}
+
+    var stackDataDaily = {
+        labels: ["Mon","Tues","Wed","Thur", "Fri", "Sat", "Sun" ],
+        datasets: [{
+                label: 'WebSite',
+                data: {{ weekly_chart.direct }},
+                backgroundColor: ["#3fde00","#3fde00","#3fde00","#3fde00","#3fde00","#3fde00","#3fde00" ]
+            },
+            {
+                label: 'Medusa',
+                data: {{ weekly_chart.medusa }},
+                backgroundColor: ["#243fe1", "#243fe1","#243fe1","#243fe1","#243fe1","#243fe1","#243fe1"]
+            },
+            {
+                label: 'Account',
+                data: {{ weekly_chart.account }},
+                backgroundColor: ["#cf00a0","#cf00a0","#cf00a0","#cf00a0","#cf00a0","#cf00a0","#cf00a0"]
+            }]
+        };
+
+
+
+    var stackOptionsWeekly = {
+        responsive: true,
+        scales: {
+            xAxes: [{ stacked: true }],
+        yAxes: [{ stacked: true }]
+        },
+
+        tooltips: {
+            mode: 'label',
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var sales = data.datasets[tooltipItem.datasetIndex].label;
+                    var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                    //return sales + " : £" + valor.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '£1,');
+                    return sales + " : £" + valor.toFixed(2);
+                },
+                afterBody: function (tooltipItem, data) {
+                	  var sales = data.datasets[tooltipItem[0].datasetIndex].label;
+                    var valor = data.datasets[tooltipItem[0].datasetIndex].data[tooltipItem[0].index];
+                    var total = 0;
+                    for (var i = 0; i < data.datasets.length; i++)
+                        total += data.datasets[i].data[tooltipItem[0].index];
+                  	return "Total : £" + total.toFixed(2);
+                }
+
+            }
+        }
+    };
+
+    var ct_weekly = document.getElementById("stackWeeklyChart").getContext("2d");
+    new Chart(ct_weekly, {type: 'bar', data: stackDataDaily, options:stackOptionsWeekly});
+
+
+
+
 })
 </script>
 {% endblock %}
