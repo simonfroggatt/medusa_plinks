@@ -87,6 +87,17 @@ WSGI_APPLICATION = 'medusa.wsgi.application'
 #
 #}
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'safetysigns_opencart_core',
+#        'USER': 'safetysigns_sql',
+#        'PASSWORD': 'fYUuAk0rbhjrMrVC',
+#    },
+#
+#}
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

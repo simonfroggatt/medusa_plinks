@@ -78,9 +78,8 @@ def create_stats(pd_data_in, irange, date_range):
     return order_stats
 
 
-def create_chart_data(pd_data_in, irange, date_range):
-
-    #chart_type_stats = {'direct': {'count': 0, 'value': 0}, 'medusa': {'count': 0, 'value': 0}, 'account': {'count': 0, 'value': 0}, 'total': {'count': 0, 'value': 0}}
+def create_weekly_data(pd_data_in, date_range):
+    # chart_type_stats = {'direct': {'count': 0, 'value': 0}, 'medusa': {'count': 0, 'value': 0}, 'account': {'count': 0, 'value': 0}, 'total': {'count': 0, 'value': 0}}
     chart_period_stats = {
         'direct': [0, 0, 0, 0, 0, 0, 0],
         'medusa': [0, 0, 0, 0, 0, 0, 0],
@@ -92,27 +91,53 @@ def create_chart_data(pd_data_in, irange, date_range):
 
     df = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])
     df['day_of_week'] = df['date_added'].dt.dayofweek
-
-    print(df)
-
     totals_df = df.groupby(['day_of_week', 'direct_website_order', 'payment_code']).sum()
     totals_df['total'] = totals_df['total'].apply(pd.to_numeric, errors='coerce')
 
     totals = totals_df.T.to_dict('index')
     total_values = totals.get('total')
-    for total_type, total_qty in total_values.items():  #total_type = ['day of week', 'website_direct', 'payment_type']
+    for total_type, total_qty in total_values.items():  # total_type = ['day of week', 'website_direct', 'payment_type']
         dow = total_type[0]
         if total_type[2].upper() in payment_types:
-           if total_type[1] == 0:
-              chart_period_stats['medusa'][dow] += round(total_qty,2)
-           else:
-              chart_period_stats['direct'][dow] += round(total_qty,2)
+            if total_type[1] == 0:
+                chart_period_stats['medusa'][dow] += round(total_qty, 2)
+            else:
+                chart_period_stats['direct'][dow] += round(total_qty, 2)
         elif total_type[2].upper() in po_types:
-                chart_period_stats['account'][dow] += round(total_qty,2)
-        chart_period_stats['total'][dow] += round(total_qty,2)
+            chart_period_stats['account'][dow] += round(total_qty, 2)
+        chart_period_stats['total'][dow] += round(total_qty, 2)
 
-    print(chart_period_stats)
-    return chart_period_stats
+    return {'datapoint': chart_period_stats, 'range': date_range}
+
+
+def create_monthly_data(pd_data_in, date_range):
+
+    chart_period_stats = {}
+
+    df = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])
+    df['date_added'] = df['date_added'].dt.date
+
+    totals_df = df.groupby(['date_added'])[['total']].sum() #need to sum the total column
+    totals_df['total'] = totals_df['total'].apply(pd.to_numeric, errors='coerce')
+
+    totals = totals_df.T.to_dict('index')
+
+    total_values = totals.get('total')
+    for k, v in total_values.items():
+        try:
+            chart_period_stats[dt.datetime.strftime(k, "%Y-%m-%d")] = v
+        except ValueError:
+            chart_period_stats[dt.datetime.strftime(k, "%Y-%m-%d")] = 0
+
+    return {'datapoint': chart_period_stats, 'range': {'start': dt.datetime.strftime(date_range['start'], "%Y-%m-%d"), 'end': dt.datetime.strftime(date_range['end'], "%Y-%m-%d")}}
+
+
+def create_chart_data(pd_data_in, irange, date_range):
+    if irange == 'W':
+        return create_weekly_data(pd_data_in, date_range)
+    elif irange == 'M':
+        return create_monthly_data(pd_data_in, date_range)
+
 
 
 

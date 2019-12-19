@@ -57,8 +57,8 @@
                              <div class="ibox-content">
                                 <div class="row">
                                 <div class="col-lg-9">
-                                    <div class="flot-chart">
-                                        <div class="flot-chart-content" id="flot-dashboard-chart"></div>
+                                    <div>
+                                        <canvas id="barMonthlyChart" ></canvas>
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -96,24 +96,22 @@ $(function () {
     new Chart(ct_daily, {type: 'doughnut', data: doughnutDataDaily, options:doughnutOptionsDaily});
 
 
-    var test = {{ weekly_chart.direct }}
-
     var stackDataDaily = {
         labels: ["Mon","Tues","Wed","Thur", "Fri", "Sat", "Sun" ],
         datasets: [{
                 label: 'WebSite',
-                data: {{ weekly_chart.direct }},
-                backgroundColor: ["#3fde00","#3fde00","#3fde00","#3fde00","#3fde00","#3fde00","#3fde00" ]
+                data: {{ weekly_chart.datapoint.direct }},
+                backgroundColor: "#3fde00"
             },
             {
                 label: 'Medusa',
-                data: {{ weekly_chart.medusa }},
-                backgroundColor: ["#243fe1", "#243fe1","#243fe1","#243fe1","#243fe1","#243fe1","#243fe1"]
+                data: {{ weekly_chart.datapoint.medusa }},
+                backgroundColor: "#243fe1"
             },
             {
                 label: 'Account',
-                data: {{ weekly_chart.account }},
-                backgroundColor: ["#cf00a0","#cf00a0","#cf00a0","#cf00a0","#cf00a0","#cf00a0","#cf00a0"]
+                data: {{ weekly_chart.datapoint.account }},
+                backgroundColor: "#cf00a0"
             }]
         };
 
@@ -153,6 +151,36 @@ $(function () {
 
 
 
+    var barDataMonthly = {
+
+        datasets: [{
+                label: 'Total Sales',
+                data: [
+                    {% for key, value in monthly_chart.datapoint.items %}
+                        { t: '{{ key }}',  y: {{ value }} } ,
+                    {% endfor %}
+                ],
+                backgroundColor: "#de7020"
+            }]
+        };
+
+    var barOptionsMonthly = {
+        responsive: true,
+        scales: {
+            xAxes: [{
+                type: 'time',
+                distribution: 'linear',
+                time: {
+                    unit: 'day',
+                    min: '{{ monthly_chart.range.start }}',
+                    max: '{{ monthly_chart.range.end }}'
+                }
+            }]
+        }
+    };
+
+    var ct_monthly = document.getElementById("barMonthlyChart").getContext("2d");
+    new Chart(ct_monthly, {type: 'bar', data: barDataMonthly, options:barOptionsMonthly});
 
 })
 </script>
