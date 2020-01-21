@@ -26,6 +26,7 @@ SECRET_KEY = '&(z0s3@73t-m@bblrpu9rutb6+atz=ir-+mac%hr_0ys+aib*k'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['www.totalsafetygroup.co.uk']
 
 
 # Application definition
@@ -39,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.products.apps.ProductsConfig',
     'apps.dashboard.apps.DashboardConfig',
-    'medusa'
+    'apps.sales.apps.SalesConfig',
+    'apps.xero_toolkit.apps.XeroToolkitConfig',
+    'medusa',
 ]
 
 MIDDLEWARE = [
@@ -77,15 +80,15 @@ WSGI_APPLICATION = 'medusa.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'safetysigns_opencart_core',
-#        'USER': 'root',
-#        'PASSWORD': 'root',
-#    },
-#
-#}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'safetysigns_opencart_core',
+        'USER': 'root',
+        'PASSWORD': 'root',
+    },
+
+}
 
 #DATABASES = {
 #    'default': {
@@ -98,17 +101,17 @@ WSGI_APPLICATION = 'medusa.wsgi.application'
 #}
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'safetysigns_opencart_core',
-        'USER': 'tsg_admin',
-        'PASSWORD': 'Zq5IpC339rlbMdZL',
-        'HOST': '109.108.132.99',
-        'PORT': '3306',
-    },
+#DATABASES = {
+#   'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'safetysigns_opencart_core',
+#        'USER': 'tsg_admin',
+#        'PASSWORD': 'Zq5IpC339rlbMdZL',
+#        'HOST': '109.108.132.99',
+#        'PORT': '3306',
+#    },
 
-}
+#}
 
 
 # Password validation

@@ -1,4 +1,4 @@
-from apps.products.models import OcOrder
+from apps.sales.models import OcOrder
 import datetime as dt
 import pandas as pd
 
@@ -89,6 +89,9 @@ def create_weekly_data(pd_data_in, date_range):
     payment_types = ['PP_PRO', 'PAYPAL_PRO', 'PP_STANDARD', 'SAGEPAY', 'COD']
     po_types = ['PROFORMA', 'PO']
 
+    if len(pd_data_in) <= 0:
+        return chart_period_stats
+
     df = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])
     df['day_of_week'] = df['date_added'].dt.dayofweek
     totals_df = df.groupby(['day_of_week', 'direct_website_order', 'payment_code']).sum()
@@ -114,20 +117,24 @@ def create_monthly_data(pd_data_in, date_range):
 
     chart_period_stats = {}
 
-    df = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])
-    df['date_added'] = df['date_added'].dt.date
+    if len(pd_data_in) <= 0:
+        chart_period_stats[dt.datetime.strftime(date_range['start'], "%Y-%m-%d")] = 0
+    else:
+        df = pd.DataFrame(list(pd_data_in), columns=["total", "payment_code", "date_added", "direct_website_order"])
 
-    totals_df = df.groupby(['date_added'])[['total']].sum() #need to sum the total column
-    totals_df['total'] = totals_df['total'].apply(pd.to_numeric, errors='coerce')
+        df['date_added'] = df['date_added'].dt.date
 
-    totals = totals_df.T.to_dict('index')
+        totals_df = df.groupby(['date_added'])[['total']].sum() #need to sum the total column
+        totals_df['total'] = totals_df['total'].apply(pd.to_numeric, errors='coerce')
 
-    total_values = totals.get('total')
-    for k, v in total_values.items():
-        try:
-            chart_period_stats[dt.datetime.strftime(k, "%Y-%m-%d")] = v
-        except ValueError:
-            chart_period_stats[dt.datetime.strftime(k, "%Y-%m-%d")] = 0
+        totals = totals_df.T.to_dict('index')
+
+        total_values = totals.get('total')
+        for k, v in total_values.items():
+            try:
+                chart_period_stats[dt.datetime.strftime(k, "%Y-%m-%d")] = v
+            except ValueError:
+                chart_period_stats[dt.datetime.strftime(k, "%Y-%m-%d")] = 0
 
     return {'datapoint': chart_period_stats, 'range': {'start': dt.datetime.strftime(date_range['start'], "%Y-%m-%d"), 'end': dt.datetime.strftime(date_range['end'], "%Y-%m-%d")}}
 

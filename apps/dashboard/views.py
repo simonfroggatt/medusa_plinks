@@ -4,7 +4,7 @@ import datetime
 import pandas as pd
 import apps.dashboard.services as sv
 
-from apps.products.models import OcOrder
+from apps.sales.models import OcOrder
 # Create your views here.
 
 #Daily, weekly, monthly, customrange

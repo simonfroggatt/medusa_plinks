@@ -5,150 +5,6 @@ import datetime as dt
 # Create your models here.
 
 
-class OcOrderQuerySet(models.QuerySet):
-    def successful(self):
-        valid_status = [2, 3, 4]
-        return self.filter(payment_status_id__in=valid_status)
-
-    def today(self):
-        today_data = timezone.datetime.today()
-       #ß today_data = '2019-06-17'
-        return self.filter(date_added__contains=today_data)
-
-    def order_range(self, startdate, enddate):
-        return self.filter(date_added__gte=startdate, date_added__lte=enddate)
-
-
-class OcOrderManager(models.Manager):
-    def get_queryset(self):
-        return OcOrderQuerySet(self.model, using=self._db)
-
-    def successful(self):
-        return self.get_queryset().successful()
-
-    def orders_today(self, blsuccessful = True):
-        if (blsuccessful):
-            return self.get_queryset().successful().today()
-        else:
-            return self.get_queryset().today()
-
-    def orders_week(self, blsuccessful = True):
-        today = dt.date.today()
-        startdate = today - dt.timedelta(days=today.weekday())
-        enddate = startdate + dt.timedelta(days=6)
-        if (blsuccessful):
-            return self.get_queryset().successful().order_range(startdate, enddate)
-        else:
-            return self.get_queryset().order_range(startdate, enddate)
-
-    def orders_month(self, blsuccessful = True):
-        today = dt.date.today()
-        startdate = today.replace(day=1)
-        if startdate.month == 12:  # December
-            enddate = dt.date(startdate.year, startdate.month, 31)
-        else:
-            enddate = dt.date(startdate.year, startdate.month + 1, 1) - dt.timedelta(days=1)
-
-        if (blsuccessful):
-            return self.get_queryset().successful().order_range(startdate, enddate)
-        else:
-            return self.get_queryset().order_range(startdate, enddate)
-
-    def orders_range(self, startdate, enddate, blsuccessful = True):
-        if(blsuccessful):
-            return self.get_queryset().successful().order_range(startdate, enddate)
-        else:
-            return self.get_queryset().order_range(startdate, enddate)
-
-
-
-
-class OcOrder(models.Model):
-    order_id = models.AutoField(primary_key=True)
-    invoice_no = models.IntegerField()
-    invoice_prefix = models.CharField(max_length=26, blank=True, null=True)
-    purchase_order_ref = models.CharField(max_length=50, blank=True, null=True)
-    store_id = models.IntegerField()
-    store_name = models.CharField(max_length=64)
-    store_url = models.CharField(max_length=255)
-    customer_id = models.IntegerField()
-    customer_group_id = models.IntegerField()
-    company = models.CharField(max_length=255, blank=True, null=True)
-    firstname = models.CharField(max_length=32)
-    lastname = models.CharField(max_length=32)
-    email = models.CharField(max_length=96)
-    telephone = models.CharField(max_length=32)
-    fax = models.CharField(max_length=32, blank=True, null=True)
-    custom_field = models.TextField(blank=True, null=True)
-    payment_firstname = models.CharField(max_length=32, blank=True, null=True)
-    payment_lastname = models.CharField(max_length=32, blank=True, null=True)
-    payment_company = models.CharField(max_length=60, blank=True, null=True)
-    payment_telephone = models.CharField(max_length=32, blank=True, null=True)
-    payment_email = models.CharField(max_length=255, blank=True, null=True)
-    payment_address_1 = models.CharField(max_length=128, blank=True, null=True)
-    payment_address_2 = models.CharField(max_length=128, blank=True, null=True)
-    payment_city = models.CharField(max_length=128, blank=True, null=True)
-    payment_postcode = models.CharField(max_length=10, blank=True, null=True)
-    payment_country = models.CharField(max_length=128, blank=True, null=True)
-    payment_country_id = models.IntegerField(blank=True, null=True)
-    payment_zone = models.CharField(max_length=128, blank=True, null=True)
-    payment_zone_id = models.IntegerField(blank=True, null=True)
-    payment_address_format = models.TextField(blank=True, null=True)
-    payment_custom_field = models.TextField(blank=True, null=True)
-    payment_method = models.CharField(max_length=128, blank=True, null=True)
-    payment_code = models.CharField(max_length=128, blank=True, null=True)
-    shipping_company = models.CharField(max_length=255, blank=True, null=True)
-    shipping_firstname = models.CharField(max_length=32, blank=True, null=True)
-    shipping_lastname = models.CharField(max_length=32, blank=True, null=True)
-    shipping_telephone = models.CharField(max_length=32, blank=True, null=True)
-    shipping_email = models.CharField(max_length=255, blank=True, null=True)
-    shipping_address_1 = models.CharField(max_length=128, blank=True, null=True)
-    shipping_address_2 = models.CharField(max_length=128, blank=True, null=True)
-    shipping_city = models.CharField(max_length=128, blank=True, null=True)
-    shipping_postcode = models.CharField(max_length=10, blank=True, null=True)
-    shipping_country = models.CharField(max_length=128, blank=True, null=True)
-    shipping_country_id = models.IntegerField(blank=True, null=True)
-    shipping_zone = models.CharField(max_length=128, blank=True, null=True)
-    shipping_zone_id = models.IntegerField(blank=True, null=True)
-    shipping_address_format = models.TextField(blank=True, null=True)
-    shipping_custom_field = models.TextField(blank=True, null=True)
-    shipping_method = models.CharField(max_length=128, blank=True, null=True)
-    shipping_code = models.CharField(max_length=128, blank=True, null=True)
-    comment = models.TextField(blank=True, null=True)
-    total = models.DecimalField(max_digits=15, decimal_places=4)
-    order_status_id = models.IntegerField()
-    payment_status_id = models.IntegerField()
-    affiliate_id = models.IntegerField()
-    commission = models.DecimalField(max_digits=15, decimal_places=4)
-    marketing_id = models.IntegerField()
-    tracking = models.CharField(max_length=64, blank=True, null=True)
-    shipped_by_company = models.CharField(max_length=255, blank=True, null=True)
-    language_id = models.IntegerField()
-    currency_id = models.IntegerField()
-    currency_code = models.CharField(max_length=3)
-    currency_value = models.DecimalField(max_digits=15, decimal_places=8)
-    ip = models.CharField(max_length=40)
-    forwarded_ip = models.CharField(max_length=40)
-    user_agent = models.CharField(max_length=255)
-    accept_language = models.CharField(max_length=255)
-    date_added = models.DateTimeField(blank=True, null=True)
-    date_modified = models.DateTimeField(blank=True, null=True)
-    date_printed = models.DateTimeField(blank=True, null=True)
-    date_shipped = models.DateTimeField(blank=True, null=True)
-    date_paid = models.DateTimeField(blank=True, null=True)
-    payment_due_date = models.DateTimeField(blank=True, null=True)
-    printed_status = models.IntegerField(blank=True, null=True)
-    printed_user = models.IntegerField(blank=True, null=True)
-    payment_transaction_ref = models.CharField(max_length=100, blank=True, null=True)
-    flag_id = models.IntegerField(blank=True, null=True)
-    xero_invoiceid = models.CharField(max_length=512, blank=True, null=True)
-    direct_website_order = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'oc_order'
-
-    objects = OcOrderManager()
 
 
 class OcProduct(models.Model):
@@ -286,3 +142,68 @@ class SsanSymbolsToCategory(models.Model):
     class Meta:
         managed = False
         db_table = 'ssan_symbols_to_category'
+
+
+class SsanProductMaterial(models.Model):
+    material_name = models.CharField(max_length=255)
+    material_desc = models.CharField(max_length=255, blank=True, null=True)
+    material_desc_full = models.CharField(max_length=255, blank=True, null=True)
+    mounting_desc = models.CharField(max_length=255, blank=True, null=True)
+    mounting_desc_full = models.CharField(max_length=255, blank=True, null=True)
+    thickness_desc = models.CharField(max_length=255, blank=True, null=True)
+    thickness_desc_full = models.CharField(max_length=255, blank=True, null=True)
+    fixing_desc = models.CharField(max_length=255, blank=True, null=True)
+    fixing_desc_full = models.CharField(max_length=255, blank=True, null=True)
+    colour_desc = models.CharField(max_length=255, blank=True, null=True)
+    colour_desc_full = models.CharField(max_length=255, blank=True, null=True)
+    code = models.CharField(max_length=255, blank=True, null=True)
+    image = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ssan_product_material'
+
+
+class SsanProductSizes(models.Model):
+    size_name = models.CharField(max_length=50)
+    size_width = models.IntegerField(blank=True, null=True)
+    size_height = models.IntegerField(blank=True, null=True)
+    size_units = models.CharField(max_length=50, blank=True, null=True)
+    size_orientation = models.CharField(max_length=20, blank=True, null=True)
+    size_extra = models.CharField(max_length=100, blank=True, null=True)
+    size_template = models.IntegerField(blank=True, null=True)
+    size_code = models.CharField(max_length=5)
+    symbol_default_location = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ssan_product_sizes'
+
+
+class SsanSizeMaterialComb(models.Model):
+    product_size = models.ForeignKey(SsanProductSizes, models.DO_NOTHING)
+    product_material = models.ForeignKey(SsanProductMaterial, models.DO_NOTHING)
+    size_material_comb_price = models.FloatField()
+
+    class Meta:
+        managed = False
+        db_table = 'ssan_size_material_comb'
+        unique_together = (('id', 'product_size', 'product_material'),)
+
+class SsanProductVariants(models.Model):
+    product_id = models.IntegerField(blank=True, null=True)
+    size_material = models.ForeignKey(SsanSizeMaterialComb, models.DO_NOTHING)
+    variant_code = models.CharField(max_length=255, blank=True, null=True)
+    variant_overide_price = models.DecimalField(max_digits=5, decimal_places=2)
+    alternative_image = models.CharField(max_length=255, blank=True, null=True)
+    exclude_fpnp = models.IntegerField()
+    supplier_id = models.IntegerField(blank=True, null=True)
+    supplier_code = models.CharField(max_length=255, blank=True, null=True)
+    supplier_price = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    stock_amount = models.IntegerField(blank=True, null=True)
+    stock_days = models.IntegerField(blank=True, null=True)
+    gtin = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ssan_product_variants'

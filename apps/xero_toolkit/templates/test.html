@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {{ xero_test }}
+    {% if xero_errors %}
+        <h1>XERO ERRORS</h1>
+        Error type: {{ xero_errors.error_type }}<br>
+        Error process: {{ xero_errors.error_process }}<br>
+        Error code: {{ xero_errors.error_code }}<br>
+    {% endif %}
+</head>
+<body>
+
+</body>
+</html>
