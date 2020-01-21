@@ -171,7 +171,7 @@ class XeroInvoice(XeroItem):
         self.__Total = total
 
     def save_invoice(self, xero_auth_class):
-        post_fix = 'd'
+        post_fix = ''
         endpoint = 'Invoices'
         invoice_dict = {
             "Type": self.__Type,
