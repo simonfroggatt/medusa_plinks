@@ -84,6 +84,7 @@ class XeroAuthManager:
             self._xero_refresh_token()
 
     def _xero_first_login(self):
+        self._debug('_xero_first_login')
         auth_url = ('''https://login.xero.com/identity/connect/authorize?''' +
                     '''response_type=code''' +
                     '''&client_id=''' + constants.XERO_CLIENT_ID +
@@ -91,10 +92,12 @@ class XeroAuthManager:
                     '''&scope=''' + constants.XERO_SCOPE +
                     '''&state=123''')
 
+        self._debug('call url:' + auth_url )
         webbrowser.open_new(auth_url)
+        self._debug('url called')
 
     def _xero_refresh_token(self):
-
+        self._debug('_xero_refresh_token')
         with open(self.token_filename) as json_file:
             data = json.load(json_file)
 
@@ -102,6 +105,7 @@ class XeroAuthManager:
         dt_now = datetime.datetime.now()
 
         if dt_now > dt_exp:
+            self._debug('get new token')
             old_token = data['refresh_token']
             token_refresh_url = 'https://identity.xero.com/connect/token'
             response = requests.post(token_refresh_url,
@@ -113,6 +117,8 @@ class XeroAuthManager:
                                          'grant_type': 'refresh_token',
                                          'refresh_token': old_token
                                      })
+            self._debug('call url:' + token_refresh_url)
+            self._debug('response code:' + str(response.status_code))
             if response.status_code == 200:
                 json_response = response.json()
                 with open(self.token_filename, 'w') as outfile:
@@ -218,3 +224,14 @@ class XeroAuthManager:
        # self.error_codes['error_number'] = json_response['status']
         #self.error_codes['error_type'] = json_response['type']
         #self.error_codes['error_detail'] = json_response['detail']
+
+    def _debug(self, debugline):
+        log_file = os.path.join(settings.BASE_DIR, 'apps/xero_toolkit/xero_error.txt')
+        if os.path.exists(log_file):
+            append_write = 'a'  # append if already exists
+        else:
+            append_write = 'w'  # make a new file if not
+
+        with open(log_file, append_write) as outfile:
+            outfile.write(debugline + '\n')
+

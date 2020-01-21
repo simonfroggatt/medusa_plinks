@@ -16,7 +16,7 @@ client_secret = 'tLoGvLNzNjnEcsqCetBuXWgZxB9DVU1ueONtyR3hMXC9ZuKu'
 redirect_url = 'https://localhost:8000/xero/passback/'
 scope = 'offline_access accounting.settings accounting.contacts'
 b64_id_secret = base64.b64encode(bytes(client_id + ':' + client_secret, 'utf-8')).decode('utf-8')
-access_token = {'refresh_token' : '', 'expiry': ''}
+access_token = {'refresh_token': '', 'expiry': ''}
 
 
 def XeroFirstLogin(request):
@@ -56,7 +56,7 @@ def XeroGetTokenInfo(request):
     if response.status_code == 200:
         return_val = {'response:': 200, 'access_token': json_response['access_token'],
                       'refresh_token': json_response['refresh_token']}
-        token_file = os.path.join(settings.BASE_DIR, 'apps/xero_toolkit/'+ xeromanager.constants.XERO_TOKEN_FILENAME)
+        token_file = os.path.join(settings.BASE_DIR, 'apps/xero_toolkit/' + xeromanager.constants.XERO_TOKEN_FILENAME)
         with open(token_file, 'w') as outfile:
             json.dump(json_response, outfile)
 
