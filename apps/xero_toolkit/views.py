@@ -52,9 +52,8 @@ def XeroGetTokenInfo(request):
                                  'redirect_uri': xeromanager.constants.XERO_REDIRECT_URL
                              })
 
-    json_response = response.json()
-
     if response.status_code == 200:
+        json_response = response.json()
         return_val = {'response:': 200, 'access_token': json_response['access_token'],
                       'refresh_token': json_response['refresh_token']}
         token_file = os.path.join(settings.BASE_DIR, 'apps/xero_toolkit/' + xeromanager.constants.XERO_TOKEN_FILENAME)
