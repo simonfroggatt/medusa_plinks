@@ -49,7 +49,7 @@ def XeroGetTokenInfo(request):
                              data={
                                  'grant_type': 'authorization_code',
                                  'code': auth_code,
-                                 'redirect_uri': redirect_url
+                                 'redirect_uri': xeromanager.constants.XERO_REDIRECT_URL
                              })
 
     json_response = response.json()
