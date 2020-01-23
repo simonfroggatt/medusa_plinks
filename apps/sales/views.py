@@ -45,11 +45,8 @@ def xero_push_all(request):
     xero_auth = xeromanager.XeroAuthManager()
 
     sql_order_details = "SELECT safetysigns_opencart_core.oc_order.*,safetysigns_opencart_core.oc_customer.xero_id " \
-                        "FROM safetysigns_opencart_core.oc_order " \
-                        "JOIN safetysigns_opencart_core.oc_order_status ON " \
-                        "safetysigns_opencart_core.oc_order.order_status_id=safetysigns_opencart_core.oc_order_status.order_status_id " \
-                        "JOIN safetysigns_opencart_core.ssan_payment_status ON " \
-                        "safetysigns_opencart_core.oc_order.payment_status_id=safetysigns_opencart_core.ssan_payment_status.id " \
+                        "FROM safetysigns_opencart_core.oc_order JOIN safetysigns_opencart_core.oc_customer ON " \
+                        "safetysigns_opencart_core.oc_order.customer_id=safetysigns_opencart_core.oc_customer.customer_id " \
                         "WHERE ((safetysigns_opencart_core.oc_order.xero_invoiceid IS NULL) OR " \
                         "(safetysigns_opencart_core.oc_order.xero_invoiceid='')) AND " \
                         "safetysigns_opencart_core.oc_order.payment_status_id IN (2,3,4) AND " \
