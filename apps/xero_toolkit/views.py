@@ -53,6 +53,7 @@ def XeroGetTokenInfo(request):
                              })
 
     json_response = response.json()
+
     if response.status_code == 200:
         return_val = {'response:': 200, 'access_token': json_response['access_token'],
                       'refresh_token': json_response['refresh_token']}
@@ -61,7 +62,10 @@ def XeroGetTokenInfo(request):
             json.dump(json_response, outfile)
 
     else:
-        return_val = {'response': response.status_code, 'access_token': 'error', 'refresh_token': 'error'}
+        token_file = os.path.join(settings.BASE_DIR, 'apps/xero_toolkit/' + xeromanager.constants.XERO_TOKEN_FILENAME + '.error')
+        with open(token_file, 'w') as outfile:
+            outfile.write(response.text)
+        return_val = {'response': response.status_code, 'access_token': response.status_code, 'refresh_token': response.reason}
 
 
     # response.status_code =='200'
