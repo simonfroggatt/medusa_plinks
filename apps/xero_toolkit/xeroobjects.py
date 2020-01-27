@@ -87,8 +87,8 @@ class XeroContact(XeroItem):
             "EmailAddress": self.__EmailAddress,
             "Addresses" : self.__Addresses,
             "Phones": self.__Phones,
-            "AccountsReceivableTaxType": "OUTPUT",
-            "AccountsPayableTaxType": "INPUT",
+            "AccountsReceivableTaxType": "OUTPUT2",
+            "AccountsPayableTaxType": "INPUT2",
             "DefaultCurrency": "GBP"
         }
 
