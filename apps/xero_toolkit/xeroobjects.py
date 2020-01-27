@@ -143,8 +143,9 @@ class XeroInvoice(XeroItem):
 
 
     def add_order_lines(self, order_lines):
-        lineitem = {}
+
         for product_line in order_lines:
+            lineitem = {}
             lineitem['Description'] = product_line['name'] + '(' + product_line['model'] + ')' + '\n' + \
                                       'Size: ' + product_line['size_name'] + '\n' + \
                                       'Material: ' + product_line['material_name']
@@ -153,8 +154,9 @@ class XeroInvoice(XeroItem):
             lineitem['LineAmount'] = format(product_line['total'], '.2f')
             #lineitem['TaxType'] = 'OUTPUT'
             lineitem['AccountCode'] = '200'
+            self.__LineItems.append(lineitem)
 
-        self.__LineItems.append(lineitem)
+
 
     def add_shipping(self, shipping_rate):
         lineitem = {}
