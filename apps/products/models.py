@@ -95,7 +95,7 @@ class SsanSymbols(models.Model):
     humanbehav = models.CharField(max_length=1024, blank=True, null=True)
     svg_path = models.CharField(max_length=255, blank=True, null=True)
     category = models.IntegerField(blank=True, null=True)
-    standard_id = models.ForeignKey(SsanSymbolStandards, models.DO_NOTHING, blank=True, null=True)
+    standard = models.ForeignKey(SsanSymbolStandards, models.DO_NOTHING, blank=True, null=True)
     image_width = models.IntegerField(blank=True, null=True)
     image_height = models.IntegerField(blank=True, null=True)
 

@@ -26,8 +26,11 @@ def XeroFirstLogin(request):
                 '''&scope=''' + xeromanager.constants.XERO_SCOPE +
                 '''&state=123''')
 
+    testdebug('going to send open request')
+    testdebug(auth_url)
     webbrowser.open_new(auth_url)
     #opens new window for login to XERO for first access
+    testdebug('sent request')
 
     return render(request, template_name)
 
@@ -249,5 +252,14 @@ def XeroTestClass(request):
         xero_errors = xero_c.get_error()
         context['xero_errors'] = xero_errors
 
-
     return render(request, template_name, context)
+
+
+def testdebug(debugline):
+    log_file = os.path.join(settings.BASE_DIR, 'apps/xero_toolkit/test_log.txt')
+    if os.path.exists(log_file):
+        append_write = 'a'  # append if already exists
+    else:
+        append_write = 'w'  # make a new file if not
+    with open(log_file, append_write) as outfile:
+        outfile.write(debugline + '\n')
