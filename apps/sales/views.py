@@ -50,7 +50,7 @@ def xero_push_all(request):
                         "WHERE ((safetysigns_opencart_core.oc_order.xero_invoiceid IS NULL) OR " \
                         "(safetysigns_opencart_core.oc_order.xero_invoiceid='')) AND " \
                         "safetysigns_opencart_core.oc_order.payment_status_id IN (2,3,4) AND " \
-                        "safetysigns_opencart_core.oc_order.order_id> 40000 LIMIT 1"
+                        "safetysigns_opencart_core.oc_order.order_id> 40000 LIMIT 50"
 
     with connection.cursor() as cursor:
         cursor.execute(sql_order_details)
