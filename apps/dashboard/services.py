@@ -38,7 +38,7 @@ def create_date_range(irange):
 
 def create_stats(pd_data_in, irange, date_range):
     order_stats = {'direct': {'count': 0, 'value': 0}, 'medusa': {'count': 0, 'value': 0}, 'account': {'count': 0, 'value': 0}, 'total': {'count': 0, 'value': 0}}
-    payment_types = ['PP_PRO', 'PAYPAL_PRO', 'PP_STANDARD', 'SAGEPAY', 'COD']
+    payment_types = ['PP_PRO', 'PAYPAL_PRO', 'PP_STANDARD', 'SAGEPAY', 'COD', 'SAGEPAY_DIRECT']
     po_types = ['PROFORMA', 'PO']
 
     if len(pd_data_in) <= 0:
@@ -86,7 +86,7 @@ def create_weekly_data(pd_data_in, date_range):
         'account': [0, 0, 0, 0, 0, 0, 0],
         'total': [0, 0, 0, 0, 0, 0, 0]
     }
-    payment_types = ['PP_PRO', 'PAYPAL_PRO', 'PP_STANDARD', 'SAGEPAY', 'COD']
+    payment_types = ['PP_PRO', 'PAYPAL_PRO', 'PP_STANDARD', 'SAGEPAY', 'COD', 'SAGEPAY_DIRECT']
     po_types = ['PROFORMA', 'PO']
 
     if len(pd_data_in) <= 0:
