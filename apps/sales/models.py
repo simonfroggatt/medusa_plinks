@@ -245,3 +245,15 @@ class OcOrderTotal(models.Model):
         managed = False
         db_table = 'oc_order_total'
 
+
+class SsanTempShipping(models.Model):
+    code = models.CharField(max_length=255, blank=True, null=True)
+    image = models.CharField(max_length=255, blank=True, null=True)
+    thumb = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    tracking_url = models.CharField(max_length=512, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ssan_temp_shipping'
+

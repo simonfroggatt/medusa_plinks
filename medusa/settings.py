@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.sales.apps.SalesConfig',
     'apps.xero_toolkit.apps.XeroToolkitConfig',
     'medusa',
+    'rest_framework_datatables',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'safetysigns_opencart_core',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'Keeba69!',
     },
 
 }
@@ -158,3 +159,28 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn")
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework_datatables.renderers.DatatablesRenderer',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework_datatables.filters.DatatablesFilterBackend',
+    ),
+
+    'DATETIME_FORMAT' : "%d/%m/%Y %H:%M:%S",
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
+    'PAGE_SIZE': 2000,
+}
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'safetysignsandnotices@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = '=JqO29iKCy'  # Replace with your Gmail password or an app-specific password
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

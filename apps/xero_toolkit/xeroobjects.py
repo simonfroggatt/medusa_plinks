@@ -1,5 +1,5 @@
 import json
-from . import constants
+#from . import constants
 from apps.xero_toolkit.xeromanager import XeroAuthManager
 
 class XeroItem:

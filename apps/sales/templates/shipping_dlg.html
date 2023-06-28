@@ -1,0 +1,64 @@
+{% load static %}
+<div class="modal-header">
+    <h4 class="modal-title">Shipping</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form method="post" action="{% url 'shipping_dialog' order_id %}" class="js-shipping-submit" id="form-shipping-submit">
+    {% csrf_token %}
+    <div class="modal-body">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="row ">
+                        <div class="col-12 pb-2">
+                            <label for="shipping_id">Which shipping method?</label>
+                            <select class="form-control pb-2" aria-label="Default select" id="shipping_id"
+                                    name="shipping_id">
+                                {% for shipping_data in shipping_obj %}
+                                    {% if shipping_data.code == order_obj.shipped_by_company %}
+                                        <option selected
+                                                value="{{ shipping_data.code }}">{{ shipping_data.name }}</option>
+                                    {% else %}
+                                        <option value="{{ shipping_data.code }}">{{ shipping_data.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12 pb-2">
+                            <label for="tracking_code">Tracking Code</label>
+                            <input type="text" class="form-text col-12" id="tracking_code" name="tracking_code"
+                                   value="{{ order_obj.tracking }}">
+
+                        </div>
+                        <div class="col-12">
+                            <label for="email_to">Send Email to</label>
+                            <input type="email" class="form-control pb-2" name="email_to" id="email_to" value="{{ order_obj.shipping_email }}">
+                            <label for="send_email">Send Email</label>
+                            <input type="checkbox" class="shipping_email" checked value="1" name="send_email" id="send_email">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <ul class="unstyled">
+                        <li>{{ order_obj.shipping_company }}</li>
+                        <li>{{ order_obj.shipping_firstname }} {{ order_obj.shipping_lastname }}</li>
+                        <li>{{ order_obj.shipping_address_1 }}</li>
+                        <li>{{ order_obj.shipping_address_2 }}</li>
+                        <li>{{ order_obj.shipping_city }}</li>
+                        <li>{{ order_obj.shipping_postcode }}</li>
+                        <li>{{ order_obj.shipping_telephone }}</li>
+                        <li>{{ order_obj.shipping_email }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Add Shipping</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+</form>

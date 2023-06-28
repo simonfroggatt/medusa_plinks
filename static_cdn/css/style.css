@@ -9596,3 +9596,14 @@ body.md-skin {
     margin: 0;
   }
 }
+
+
+.btn-grey {
+    background-color: grey;
+    color: black;
+}
+
+.btn-green {
+    background-color: #20de20;
+     color: white;
+}
