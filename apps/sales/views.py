@@ -9,7 +9,7 @@ from apps.xero_toolkit import xeroobjects, xeromanager
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
 
-from apps.sales.models import OcOrder, SsanTempShipping
+from apps.sales.models import OcOrder, SsanTempShipping, OcCustomer
 from apps.sales.serializers import OrdersSerializer
 from apps.sales.forms import OrderForm
 from django.template.loader import render_to_string
@@ -63,6 +63,52 @@ def xero_order_list_asJson(request):
         missing_orders_all = json.dumps({"order_data": list(rows)},default=str)
         # data = {'test_data': test_all }
         return HttpResponse(missing_orders_all, content_type='application/json')
+
+
+
+def xero_push_all_new(request):
+    template_name = 'xero_list.html'
+    content = {'content_class': 'ecommerce'}
+    order_processed = [2,3,4]
+    xero_auth = xeromanager.XeroAuthManager()
+
+    order_obj = OcOrder.objects.filter(payment_status__in=order_processed, order_id__gt=40000, xero_invoiceid__isnull=True)
+
+    for order_line in order_obj.iterator():
+        customer_id = order_line.customer_id
+        customer_obj = OcCustomer.objects.filter(customer_id=customer_id).first()
+        if not customer_obj.xero_id:
+            newcontact = xeroobjects.XeroContact()
+            customer_details = xero_get_customer_details(customer_id)
+            newcontact.create_contact(customer_details)
+            customer_addresses = xero_get_customer_addresses(customer_id)
+            newcontact.add_address(customer_addresses)
+            xero_customer_id = newcontact.save_contact(xero_auth)
+            if xero_customer_id is not None:
+                xero_save_customerid_new(customer_id, xero_customer_id)
+            else:
+                last_error = xero_auth.get_error()
+                content['xero_error'] = last_error
+
+        else:
+            xero_customer_id = customer_obj.xero_id
+
+        if xero_customer_id is not None:
+            newinvoice = xeroobjects.XeroInvoice()
+            newinvoice.create_invoice(order_line, xero_customer_id)
+            xero_product_list = xero_get_order_products(order_line.order_id)
+            newinvoice.add_order_lines(xero_product_list)
+            xero_totals = xero_get_order_totals(order_line.order_id)
+            newinvoice.set_totals(xero_totals['sub_total'], xero_totals['tax'], xero_totals['total'])
+            newinvoice.add_shipping(xero_totals['shipping'])
+            xero_invoice_id = newinvoice.save_invoice(xero_auth)
+            if xero_invoice_id is not None:
+                xero_save_orderid_new(order_line.order_id, xero_customer_id)
+            else:
+                last_error = xero_auth.get_error()
+                content['xero_error'] = last_error
+
+    return render(request, template_name, content)
 
 
 def xero_push_all(request):
@@ -123,6 +169,7 @@ def xero_push_all(request):
     return render(request, template_name, content)
 
 
+
 def xero_get_order_products(orderid):
     sql_order_products = 'SELECT oc_order_product.* FROM oc_order_product WHERE oc_order_product.order_id = ' + str(orderid)
 
@@ -178,10 +225,25 @@ def xero_get_order_totals(orderid):
             total_arr[row[0]] = row[1]
     return total_arr
 
+
+def xero_save_customerid_new(customer_id, xero_id):
+    customer_obj = get_object_or_404(OcCustomer, customer_id=customer_id)
+    customer_obj.xero_id = xero_id
+    customer_obj.save()
+
+
+
 def xero_save_customerid(customer_id, xero_id):
     sql_order_totals = "UPDATE oc_customer SET oc_customer.xero_id = '" + xero_id+ "' WHERE oc_customer.customer_id = " + str(customer_id)
     with connection.cursor() as cursor:
         cursor.execute(sql_order_totals)
+
+
+def xero_save_orderid_new(order_id, xero_id):
+    order_obj = get_object_or_404(OcOrder, order_id=order_id)
+    order_obj.xero_invoiceid = xero_id
+    order_obj.save()
+
 
 def xero_save_orderid(order_id, xero_id):
     sql_order_totals = "UPDATE oc_order SET oc_order.xero_invoiceid = '" + xero_id+ "' WHERE oc_order.order_id = " + str(order_id)
@@ -203,6 +265,10 @@ def shipping_dlg(request, pk):
         order_obj.date_shipped = datetime.now()
         order_obj.tracking = tracking_code
         order_obj.shipped_by_company = shipping_method
+        #set the order to complete
+        order_obj.order_status_id = 99
+        order_product_objects = order_obj.order_products
+
         order_obj.save()
         if send_email_chk:
             send_res = send_email(request, pk, email_to_in)

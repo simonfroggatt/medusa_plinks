@@ -211,7 +211,7 @@ class OcOrder(models.Model):
 
 class OcOrderProduct(models.Model):
     order_product_id = models.AutoField(primary_key=True)
-    order = models.ForeignKey(OcOrder, models.DO_NOTHING)
+    order = models.ForeignKey(OcOrder, models.DO_NOTHING, related_name='order_products')
     product = models.ForeignKey(prods.OcProduct, models.DO_NOTHING)
     name = models.CharField(max_length=255)
     model = models.CharField(max_length=64)

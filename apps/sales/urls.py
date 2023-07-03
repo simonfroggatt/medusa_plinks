@@ -13,7 +13,8 @@ from .views import (
     xero_push_all,
     shipping_dlg,
     send_email,
-    create_ship_template
+    create_ship_template,
+    xero_push_all_new
 )
 
 
@@ -21,7 +22,7 @@ urlpatterns = [
     url('^api/', include(router.urls)),
     path('orders', views.order_list, name='ordersall'),
     path('xero_list/', xero_list),
-    path('xero_push_all/', xero_push_all),
+    path('xero_push_all/', xero_push_all_new),
     path('json_xero_order_data/', xero_order_list_asJson),
     path('<int:pk>/shipping', shipping_dlg, name='shipping_dialog'),
     path('<int:pk>/sendemail/', send_email),
